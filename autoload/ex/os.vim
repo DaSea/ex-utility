@@ -13,9 +13,10 @@ function ex#os#is( name )
 
     return 0
 endfunction
+"}}}
 
 " ex#os#open {{{1
-function ex#os#open( path )
+function ex#os#open(path)
     if ex#os#is('osx')
         silent exec '!open ' . a:path
         call ex#hint('open ' . a:path)
@@ -27,5 +28,41 @@ function ex#os#open( path )
         call ex#warning( 'File borwser not support in Linux' )
     endif
 endfunction
+"}}}
+
+" Judge operation system {{{
+function! ex#os#is_windows() abort "{{{
+    return  (has('win16') || has('win32') || has('win64'))
+endfunction "}}}
+function! ex#os#is_linux() abort "{{{
+    return has('unix') && !has('macunix') && !has('win32unix')
+endfunction "}}}
+function! ex#os#is_osx() abort "{{{
+    return has("macunix")
+endfunction "}}}
+function! ex#os#is_mingw() abort "{{{
+    return has("win32unix")
+endfunction "}}}
+"}}}
+
+" create dir{{{
+" path: A:/c/d/e/ 或 /c/d/e/ 目录名
+function! ex#os#new_folder(path) abort "{{{
+    if isdirectory(a:path)
+        return
+    endif
+
+    call mkdir(a:path, "p")
+endfunction "}}}
+"}}}
+
+" create file {{{
+function! ex#os#new_file(path) abort "{{{
+    " Don't open again if current buffer is the file to be opened
+    if fnamemodify(expand('%'),':p') != fnamemodify(a:path,':p')
+        silent exec 'e '.a:path
+    endif
+endfunction "}}}
+"}}}
 
 " vim:ts=4:sw=4:sts=4 et fdm=marker:
