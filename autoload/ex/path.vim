@@ -49,16 +49,19 @@ endfunction " }}}
 " 查找一个根目录, 有可能是exvim工程目录, 有可能是.git目录, 有可能是.svn目录{{{
 " Find the root path, exvim project path, or .git path, or .svn path
 function! ex#path#root(path) abort
-    let prjRoot = fnamemodify(finddir(".exvim", a:path.";", 1), ":p:h:h")
-    if ("" == prjRoot)
-        let prjRoot = fnamemodify(finddir(".git", a:path.";", 1), ":p:h:h")
+    let findDir = finddir(".exvim", a:path.";", 1)
+    if "" == findDir
+        let findDir = finddir(".git", a:path.";", 1)
+        if "" == findDir
+            let findDir = finddir(".svn", a:path.";", 1)
+        endif
     endif
 
-    if ("" == prjRoot)
-        let prjRoot = fnamemodify(finddir(".svn", a:path.";", 1), ":p:h:h")
+    if "" == findDir
+        return findDir
     endif
 
-    return prjRoot
+    return fnamemodify(findDir, ":p:h:h")
 endfunction " }}}
 
 " 在filePath下面查找fileName文件 {{{

@@ -56,6 +56,20 @@ function! ex#os#new_folder(path) abort "{{{
 endfunction "}}}
 "}}}
 
+" delete folder {{{
+function! ex#os#del_folder(path) abort
+    if isdirectory(a:path)
+        let rmcmd = ""
+        let rmPath = ex#path#auto_translate(a:path)
+        if ex#os#is_windows()
+            let rmcmd = 'rd /s /q ' . rmPath
+        else
+            let rmcmd = 'rm -rf ' . rmPath
+        endif
+        call system(rmcmd)
+    endif
+endfunction " }}}
+
 " create file {{{
 function! ex#os#new_file(path) abort "{{{
     " Don't open again if current buffer is the file to be opened
