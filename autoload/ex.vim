@@ -26,42 +26,42 @@ endfunction
 " msg: string
 function ex#debug(msg)
     silent echohl Special
-    echom 'Debug(exVim): ' . a:msg . ', ' . expand('<sfile>') 
+    echom 'Debug(exVim): ' . a:msg . ', ' . expand('<sfile>')
     silent echohl None
 endfunction
 
 " ex#short_message {{{1
-" short the msg 
+" short the msg
 function ex#short_message( msg )
    if len( a:msg ) <= &columns-13
        return a:msg
    endif
 
    let len = (&columns - 13 - 3) / 2
-   return a:msg[:len] . "..." . a:msg[ (-len):] 
+   return a:msg[:len] . "..." . a:msg[ (-len):]
 endfunction
 
 " ex#register_plugin {{{1
 
 " registered plugin used in exVim to make sure the current buffer is a
 " plugin buffer.
-" this is done by first check the filetype, and go through each item and 
+" this is done by first check the filetype, and go through each item and
 " make sure the option of the buffer is same as the option you provide
-" NOTE: if the filetype is empty, exVim will use '__EMPTY__' rules to check  
+" NOTE: if the filetype is empty, exVim will use '__EMPTY__' rules to check
 " your buffer
 " DISABLE: we use ex#register_plugin instead
 " let s:registered_plugin = {
 "             \ 'explugin': [],
-"             \ 'exproject': [], 
-"             \ 'minibufexpl': [ { 'bufname': '-MiniBufExplorer-', 'buftype': 'nofile' } ], 
+"             \ 'exproject': [],
+"             \ 'minibufexpl': [ { 'bufname': '-MiniBufExplorer-', 'buftype': 'nofile' } ],
 "             \ 'taglist': [ { 'bufname': '__Tag_List__', 'buftype': 'nofile' } ],
 "             \ 'tagbar': [ { 'bufname': '__TagBar__', 'buftype': 'nofile' } ],
-"             \ 'nerdtree': [ { 'bufname': 'NERD_tree_\d\+', 'buftype': 'nofile' } ], 
+"             \ 'nerdtree': [ { 'bufname': 'NERD_tree_\d\+', 'buftype': 'nofile' } ],
 "             \ 'undotree': [ { 'bufname': 'undotree_\d\+', 'buftype': 'nowrite' } ],
-"             \ 'diff': [ { 'bufname': 'diffpanel_\d\+', 'buftype': 'nowrite' } ], 
-"             \ 'gitcommit': [], 
+"             \ 'diff': [ { 'bufname': 'diffpanel_\d\+', 'buftype': 'nowrite' } ],
+"             \ 'gitcommit': [],
 "             \ 'gundo': [],
-"             \ 'vimfiler': [], 
+"             \ 'vimfiler': [],
 "             \ '__EMPTY__': [ { 'bufname': '-MiniBufExplorer-' } ]
 "             \ }
 let s:registered_plugin = {}
@@ -77,7 +77,7 @@ function ex#echo_registered_plugins ()
             echo k . ': {}'
         else
             for i in v
-                echo k . ': ' . string(i) 
+                echo k . ': ' . string(i)
             endfor
         endif
     endfor
@@ -102,7 +102,7 @@ function ex#register_plugin ( filetype, options )
 
     " check if we have options
     if !empty(a:options)
-        silent call add ( rules, a:options ) 
+        silent call add ( rules, a:options )
     endif
 endfunction
 
@@ -121,7 +121,7 @@ function ex#is_registered_plugin ( bufnr, ... )
         let filetype = "__EMPTY__"
     endif
 
-    " get rules directly from registered dict, if rules not found, 
+    " get rules directly from registered dict, if rules not found,
     " simply return flase because we didn't register the filetype
     if !has_key( s:registered_plugin, filetype )
         return 0
@@ -134,16 +134,16 @@ function ex#is_registered_plugin ( bufnr, ... )
     endif
 
     " check each rule dict to make sure this buffer meet our request
-    for ruledict in rules 
+    for ruledict in rules
         let failed = 0
 
-        for key in keys(ruledict) 
+        for key in keys(ruledict)
             " NOTE: this is because the value here can be list or string, if
-            " we don't unlet it, it will lead to E706 
+            " we don't unlet it, it will lead to E706
             if exists('l:value')
                 unlet value
             endif
-            let value = ruledict[key] 
+            let value = ruledict[key]
 
             " check bufname
             if key ==# 'bufname'
@@ -165,7 +165,7 @@ function ex#is_registered_plugin ( bufnr, ... )
 
             " check other option
             let bufoption = getbufvar( a:bufnr, '&'.key )
-            if bufoption !=# value 
+            if bufoption !=# value
                 let failed = 1
                 break
             endif
@@ -175,7 +175,7 @@ function ex#is_registered_plugin ( bufnr, ... )
         if failed == 0
             return 1
         endif
-    endfor 
+    endfor
 
     return 0
 endfunction
@@ -187,7 +187,7 @@ endfunction
 
 " ex#compl_by_symbol {{{1
 function ex#compl_by_symbol( arg_lead, cmd_line, cursor_pos )
-    if !exists ('s:symbols_file') || findfile(s:symbols_file) == '' 
+    if !exists ('s:symbols_file') || findfile(s:symbols_file) == ''
         return
     endif
 
@@ -201,7 +201,7 @@ function ex#compl_by_symbol( arg_lead, cmd_line, cursor_pos )
             let result = match ( tag, '\C'.pattern )
         else " ignore case compare
             let result = match ( tag, pattern )
-        endif 
+        endif
 
         if result != -1
             silent call add ( filter_tag, tag )
@@ -218,28 +218,28 @@ endfunction
 
 " ex#restore_lasteditbuffers {{{1
 function ex#restore_lasteditbuffers()
-    if findfile(s:restore_info) != '' 
+    if findfile(s:restore_info) != ''
         call ex#window#goto_edit_window()
         let cmdlist = readfile(s:restore_info)
         let needJump = 0
 
         " load all buffers
-        for cmd in cmdlist 
+        for cmd in cmdlist
             if stridx(cmd, 'badd') == 0
                 let filename = strpart( cmd, 4 )
-                if findfile(filename) != '' 
+                if findfile(filename) != ''
                     silent exec 'edit '.filename
                     doautocmd BufAdd,BufRead
                 endif
-            elseif stridx(cmd, 'edit') == 0 
+            elseif stridx(cmd, 'edit') == 0
                 let filename = strpart( cmd, 4 )
-                if findfile(filename) != '' 
+                if findfile(filename) != ''
                     let needJump = 1
-                    silent exec cmd 
+                    silent exec cmd
                 endif
-            elseif stridx(cmd, 'call') == 0 
+            elseif stridx(cmd, 'call') == 0
                 if needJump != 0
-                    silent exec cmd 
+                    silent exec cmd
                 endif
             endif
         endfor

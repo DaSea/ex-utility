@@ -10,7 +10,7 @@ endfunction
 
 " ex#hl#confirm_line {{{
 function ex#hl#confirm_line(linenr)
-    " clear previous highlight result 
+    " clear previous highlight result
     match none
 
     " highlight the line pattern
@@ -20,7 +20,7 @@ endfunction
 
 " ex#hl#target_line {{{
 function ex#hl#target_line(linenr)
-    " clear previous highlight result 
+    " clear previous highlight result
     2match none
 
     " highlight the line pattern

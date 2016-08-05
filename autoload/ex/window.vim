@@ -2,7 +2,7 @@
 " bufname: the buffer you wish to open a window edit it
 " size: the initial size of the window
 " pos: 'left', 'right', 'top', 'bottom'
-" nested: 0 or 1. if nested, the window will be created besides current window 
+" nested: 0 or 1. if nested, the window will be created besides current window
 
 function ex#window#new( bufname, size, pos, nested, callback )
     let winpos = ''
@@ -34,14 +34,14 @@ function ex#window#new( bufname, size, pos, nested, callback )
         let bufcmd = fnameescape(a:bufname)
     else
         " Edit exists buffer
-        " NOTE: '+' here is to make it work with other command 
+        " NOTE: '+' here is to make it work with other command
         let bufcmd = '+b' . bufnum
     endif
 
     " Create the ex_window
     silent exe winpos . ' ' . vcmd . ' ' . a:size . ' split ' .  bufcmd
 
-    " init window 
+    " init window
 
     " the winfix height width will let plugin-window not join into the <c-w>= operations
     silent setlocal winfixheight
@@ -54,7 +54,7 @@ endfunction
 " bufname: the buffer you wish to open a window edit it
 " size: the initial size of the window
 " pos: 'left', 'right', 'top', 'bottom'
-" nested: 0 or 1. if nested, the window will be created besides current window 
+" nested: 0 or 1. if nested, the window will be created besides current window
 " focus: 0 or 1. if focus, we will move cursor to opened window
 " callback: init callback when window created
 
@@ -95,7 +95,7 @@ function ex#window#close(winnr)
         call ex#warning( 'Can not close last window' )
     endtry
 
-    " this will help BufEnter event correctly happend when we enter the edit window 
+    " this will help BufEnter event correctly happend when we enter the edit window
     doautocmd BufEnter
 endfunction
 
@@ -114,9 +114,9 @@ endfunction
 " ex#window#record {{{
 
 " NOTE: Vim's window is manage by winnr. however, winnr will change when
-" there's window closed. Basically, win sort the all exists window, and  
-" give them winnr by the created time. This is bad for locate window in 
-" the runtime. 
+" there's window closed. Basically, win sort the all exists window, and
+" give them winnr by the created time. This is bad for locate window in
+" the runtime.
 
 " NOTE: The WinEnter,WinLeave, event will not invoke during VimEnter
 " That's why I don't init w:ex_winid when WinEnter
@@ -126,16 +126,16 @@ endfunction
 " the code. You can do this by:
 "       call ex#window#record()
 " or
-"       doautocmd WinLeave 
+"       doautocmd WinLeave
 
-" What we do is when window leaving, give it a w:ex_winid 
+" What we do is when window leaving, give it a w:ex_winid
 " that holds a unique id.
 
 let s:last_editbuf_winid = -1
 let s:last_editplugin_bufnr = -1
 let s:winid_generator = 0
 
-function s:new_winid () 
+function s:new_winid ()
     let s:winid_generator = s:winid_generator + 1
     return s:winid_generator
 endfunction
@@ -163,7 +163,7 @@ function ex#window#record()
 
     let winnr = winnr()
     let bufopts = []
-    " if this is plugin window and do not have {action: norecord} 
+    " if this is plugin window and do not have {action: norecord}
     if ex#is_registered_plugin( winbufnr(winnr), bufopts )
         if index( bufopts, 'norecord' ) == -1
             let s:last_editplugin_bufnr = bufnr('%')
@@ -174,7 +174,7 @@ function ex#window#record()
 endfunction
 
 " DEBUG
-function ex#window#debug () 
+function ex#window#debug ()
     echomsg "last edit window id = " . s:last_editbuf_winid
     echomsg "last edit buffer = " . bufname(ex#window#last_edit_bufnr())
     echomsg "last edit plugin = " . bufname(s:last_editplugin_bufnr)
@@ -215,9 +215,9 @@ function ex#window#goto_edit_window()
 
     " if we have edit window opened, jump to it
     " if something wrong make you delete the edit window (such as :q)
-    " we will try to search another edit window, 
+    " we will try to search another edit window,
     " if no edit window exists, we will split a new one and go to it.
-    if winnr != -1 
+    if winnr != -1
         " no need to jump if we already here
         if winnr() != winnr
             exe winnr . 'wincmd w'
@@ -234,15 +234,15 @@ function ex#window#goto_edit_window()
             let i = i + 1
         endwhile
 
-        " split a new one and go to it 
-        exec 'rightbelow vsplit' 
-        exec 'enew' 
-        let newBuf = bufnr('%') 
-        set buflisted 
-        set bufhidden=delete 
-        set buftype=nofile 
-        setlocal noswapfile 
-        normal athis is the scratch buffer 
+        " split a new one and go to it
+        exec 'rightbelow vsplit'
+        exec 'enew'
+        let newBuf = bufnr('%')
+        set buflisted
+        set bufhidden=delete
+        set buftype=nofile
+        setlocal noswapfile
+        normal athis is the scratch buffer
     endif
 endfunction
 
