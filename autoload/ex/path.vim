@@ -19,7 +19,7 @@ function ex#path#auto_translate(path)
 endfunction
 "}}}
 
-" 检测路径的有效性 {{{ 
+" 检测路径的有效性 {{{
 " Check the validity of path
 " 1: valid; 0: invalid
 function! ex#path#validity(checkPath) abort
@@ -86,7 +86,7 @@ function! ex#path#find_file(filePath, fileName) abort
     if ex#os#is_windows()
         let filelist = split(files, '[\x0]')
     else
-        let filelist = split(fiiles, '\n')
+        let filelist = split(files, '\n')
     endif
 
     return filelist
