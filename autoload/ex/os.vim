@@ -22,11 +22,18 @@ function ex#os#open(path)
         call ex#hint('open ' . a:path)
     elseif ex#os#is('windows')
         let winpath = ex#path#translate(a:path,'windows')
-        silent exec '!explorer ' . winpath
+        silent exec '!explorer /e,/select,' . winpath
         call ex#hint('explorer ' . winpath)
     else
-        call ex#warning( 'File borwser not support in Linux' )
-    endif
+        if executable("nautilus")
+            call system('nautilus --select ' . a:path)
+        elseif executable("dolphin")
+            call system('dolphin --select' . a:path)
+        elseif executable("dde-file-manager")
+            call system('dde-file-manager -d --show-item ' . a:path)
+        else
+            call ex#warning( 'File borwser not support in Linux' )
+        endif
 endfunction
 "}}}
 
